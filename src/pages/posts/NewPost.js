@@ -13,6 +13,20 @@ export default class SignUp extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+
+    const dbRef = firebase.database().ref();
+    const usersRef = dbRef.child('users');
+
+    const newUser = {
+      name: 'emerson',
+      age: 22,
+      email: 'lupuselit@gmail.com'
+    };
+
+    usersRef.push(newUser, function() {
+      console.log('data has been inserted');
+    });
+
     console.log('submitted');
   };
 

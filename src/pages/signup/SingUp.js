@@ -19,6 +19,7 @@ export default class SignUp extends Component {
     event.preventDefault();
 
     // Login Method
+    /*
     firebase
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
@@ -31,8 +32,9 @@ export default class SignUp extends Component {
       });
 
     console.log(this.state);
+    */
 
-    /*
+    // /*
     // Signup Method
     firebase
       .auth()
@@ -61,6 +63,16 @@ export default class SignUp extends Component {
                 console.log(error);
               });
           })
+          .then(() => {
+            const { email, displayName } = this.state.user.providerData[0];
+            firebase
+              .database()
+              .ref('users/' + this.state.user.uid)
+              .set({
+                name: displayName,
+                email: email
+              });
+          })
           .catch(function(error) {
             // An error happened.
             console.log(error);
@@ -74,12 +86,26 @@ export default class SignUp extends Component {
         console.log(errorCode, errorMessage);
       });
 
-    */
+    // */
   };
 
   showUser = () => {
     let user = firebase.auth().currentUser;
     console.log(user);
+
+    // function writeUserData(userId, name, email) {
+    //   firebase
+    //     .database()
+    //     .ref('users/' + userId)
+    //     .set({
+    //       name: 'jao',
+    //       email: email
+    //     });
+    // }
+
+    // const { uid, email, displayName } = user.providerData[0];
+
+    // writeUserData(user.uid, displayName, email);
   };
 
   logout = () => {
