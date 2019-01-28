@@ -20,6 +20,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import './App.css';
 import UserProfile from './pages/profile/UserProfile';
+import Messages from './pages/messages/Messages';
 
 const styles = {
   root: {
@@ -137,10 +138,11 @@ class App extends Component {
         </header> */}
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/signup" component={SignUp} />
-          <Route path="/login" component={Login} />
-          <Route path="/my-profile" component={Profile} />
-          <Route path="/profile/:userId" component={UserProfile} />
+          <Route exact path="/signup" component={SignUp} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/my-profile" component={Profile} />
+          <Route exact path="/profile/:userId" component={UserProfile} />
+          <Route exact path="/messages/chat/:chatId" component={Messages} />
         </Switch>
         {/* <NewPost /> */}
       </div>

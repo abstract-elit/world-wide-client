@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
+import Avatar from '@material-ui/core/Avatar';
 
 const styles = theme => ({
   root: {
@@ -18,13 +19,10 @@ const styles = theme => ({
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2
   },
-  card: {
-    maxWidth: '200px',
-    margin: '10px'
-  },
-  allUsers: {
-    display: 'flex',
-    flexWrap: 'wrap'
+  avatar: {
+    margin: 10,
+    width: 150,
+    height: 150
   }
 });
 
@@ -50,17 +48,43 @@ class UserProfile extends Component {
     getUser(this.props.match.params.userId);
   }
 
+  handleClick = event => {
+    const curId = this.props.match.params.userId;
+    let user = firebase.auth().currentUser;
+
+    let chat = '';
+
+    if (curId < user.uid) {
+      chat = `${curId}_${user.uid}`;
+    } else {
+      chat = `${user.uid}_${curId}`;
+    }
+
+    // sending the user to the chat
+    this.props.history.push(`/messages/chat/${chat}`);
+
+    // console.log(chat);
+    // console.log(curId, user.uid);
+  };
+
   render() {
     const { classes, match } = this.props;
 
     console.log();
 
+    const { name, username, photoURL } = this.state.user;
+    console.log(this.state);
+
     return (
       <Paper className={classes.root} elevation={1}>
+        <Avatar alt="" src={photoURL} className={classes.avatar} />
         <Typography variant="h5" component="h3">
-          {this.state.user.name}
-          <p>{this.state.user.username}</p>
+          {name}
         </Typography>
+
+        <Button onClick={this.handleClick} variant="outlined" color="primary">
+          Message!
+        </Button>
       </Paper>
     );
   }
