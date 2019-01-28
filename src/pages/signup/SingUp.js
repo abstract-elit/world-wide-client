@@ -37,23 +37,6 @@ class SignUp extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-
-    // Login Method
-    /*
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => {
-        console.log('logged in!');
-      })
-      .catch(function(err) {
-        // Handle errors
-        console.log(err);
-      });
-
-    console.log(this.state);
-    */
-
     // Signup Method
     firebase
       .auth()
@@ -104,7 +87,10 @@ class SignUp extends Component {
             localStorage.setItem('name', displayName);
             localStorage.setItem('email', email);
             localStorage.setItem('photo', photoURL);
+            localStorage.setItem('username', this.state.username);
+            localStorage.setItem('uid', this.state.user.uid);
 
+            // should redirect the user to their profile
             // this.history.push('/profile')
           })
           .catch(function(error) {
@@ -126,35 +112,7 @@ class SignUp extends Component {
   showUser = () => {
     let user = firebase.auth().currentUser;
     console.log(user);
-
-    // function writeUserData(userId, name, email) {
-    //   firebase
-    //     .database()
-    //     .ref('users/' + userId)
-    //     .set({
-    //       name: 'jao',
-    //       email: email
-    //     });
-    // }
-
-    // const { uid, email, displayName } = user.providerData[0];
-
-    // writeUserData(user.uid, displayName, email);
   };
-
-  // logout = () => {
-  //   firebase
-  //     .auth()
-  //     .signOut()
-  //     .then(function() {
-  //       // Sign-out successful.
-  //       console.log('logout user');
-  //     })
-  //     .catch(function(error) {
-  //       // An error happened.
-  //       console.log(error);
-  //     });
-  // };
 
   render() {
     const { classes } = this.props;
@@ -223,10 +181,6 @@ class SignUp extends Component {
             Submit
           </Button>
         </form>
-
-        {/* <button onClick={this.showUser}>Get user</button> */}
-
-        {/* <button onClick={this.logout}>logout</button> */}
       </section>
     );
   }

@@ -22,9 +22,6 @@ class Login extends Component {
   state = {
     email: '',
     password: ''
-    // name: '',
-    // photoURL: '',
-    // user: []
   };
 
   handleChange = event => {

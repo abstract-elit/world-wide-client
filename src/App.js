@@ -76,7 +76,6 @@ class App extends Component {
 
   getUser = () => {
     let user = firebase.auth().currentUser;
-    // console.log(user.displayName);
     if (user) {
       console.log(user.uid);
       this.props.history.push('my-profile');
@@ -117,26 +116,12 @@ class App extends Component {
                   Logout
                 </Button>
               )}
-
-              {/* <Button color="inherit">
-                  <Link className={classes.link} to="/signup">
-                    Sign Up
-                  </Link>
-                </Button> */}
-
               <Button onClick={this.getUser} color="inherit">
                 Get User
               </Button>
-
-              {/* <Button color="inherit">
-                <Link to="/profile/:id"></Link>
-              </Button> */}
             </Toolbar>
           </AppBar>
         </div>
-        {/* <header className="App-header">
-          <Typography>welcome to world wide!</Typography>
-        </header> */}
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/signup" component={SignUp} />

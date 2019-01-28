@@ -44,47 +44,76 @@ const styles = theme => ({
 
 class Messages extends Component {
   state = {
-    messages: {},
     allMessages: [],
-    sent: [],
-    gotten: [],
     loading: true,
-    uid: '',
+    uid: localStorage.getItem('uid'),
     inputMessage: ''
   };
 
   componentDidMount() {
-    this.getUser(this.props.match.params.chatId);
-
     const dbRef = firebase.database().ref();
 
     const messagesRef = dbRef.child(
       'messages/' + this.props.match.params.chatId
     );
 
-    let messages = [];
-    messagesRef.on('child_added', snap => {
-      let message = snap.val();
-      messages.push(message);
-      this.setState({
-        allMessages: messages,
-        loading: false
+    const getMessages = () => {
+      let messages = [];
+      messagesRef.on('child_added', snap => {
+        let message = snap.val();
+        messages.push(message);
+        this.setState({
+          allMessages: messages,
+          loading: false
+        });
       });
+    };
+
+    const createChat = () => {
+      let postMessage = {
+        msg: '',
+        time: '',
+        sender: '',
+        reciver: ''
+      };
+
+      let newPostKey = firebase
+        .database()
+        .ref('messages')
+        .child(this.props.match.params.chatId)
+        .push().key;
+
+      var updates = {};
+      updates[
+        `/messages/${this.props.match.params.chatId}/${newPostKey}`
+      ] = postMessage;
+
+      firebase
+        .database()
+        .ref()
+        .update(updates);
+      getMessages();
+    };
+
+    messagesRef.once('value', snapshot => {
+      if (!snapshot.exists()) {
+        createChat();
+      } else {
+        getMessages();
+      }
     });
   }
+
+  
+
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
   handleMessage = event => {
     event.preventDefault();
 
-    const chatId = this.props.match.params.chatId;
-
-    const reciverId = chatId.split('_').filter(id => id !== this.state.uid);
-
-    console.log(reciverId[0]);
-
     const writeNewPost = (uid, username, picture, title, body) => {
-      // A post entry.
-
       const chatId = this.props.match.params.chatId;
       const reciverId = chatId.split('_').filter(id => id !== this.state.uid);
 
@@ -97,16 +126,13 @@ class Messages extends Component {
 
       console.log(postMessage, chatId);
 
-      // Get a key for a new Post.
+      // Creates a new key for the message and retrives it
       var newPostKey = firebase
         .database()
         .ref('messages')
         .child(chatId)
         .push().key;
 
-      console.log(newPostKey);
-
-      // // Write the new post's data simultaneously in the posts list and the user's post list.
       var updates = {};
       updates[`/messages/${chatId}/${newPostKey}`] = postMessage;
 
@@ -116,19 +142,10 @@ class Messages extends Component {
         .update(updates);
     };
 
-    // console.log(event.target.value);
-
     writeNewPost();
-  };
-
-  getUser = async chat => {
-    const res = await fetch(`http://127.0.0.1:5000/api/all/chats/${chat}`);
-    const { messages } = await res.json();
 
     this.setState({
-      messages: messages,
-      loading: false,
-      uid: localStorage.getItem('uid')
+      inputMessage: ''
     });
   };
 
@@ -144,49 +161,6 @@ class Messages extends Component {
       return result * sortOrder;
     };
   }
-
-  getMessages = event => {
-    const { messages, uid } = this.state;
-
-    let sent = [];
-    let gotten = [];
-    let allMgs = [];
-
-    Object.entries(messages).forEach(([key, val]) => {
-      allMgs.push(val);
-
-      if (val.sender === uid) {
-        sent.push(val);
-        // console.log(sent);
-
-        this.setState({
-          sent
-        });
-      } else {
-        gotten.push(val);
-
-        this.setState({
-          gotten
-        });
-      }
-    });
-
-    // sorting the messages we got
-    allMgs.sort(this.dynamicSort('time'));
-
-    console.log(allMgs);
-    allMgs.forEach(element => {
-      console.log(this.timeConverter(element.time), element.msg);
-    });
-
-    this.setState({
-      allMessages: allMgs
-    });
-  };
-
-  handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
 
   timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
@@ -217,9 +191,7 @@ class Messages extends Component {
 
   render() {
     const { classes, match } = this.props;
-    const { messages, uid, loading, sent, gotten, allMessages } = this.state;
-
-    // console.log(uid);
+    const { uid, loading, allMessages } = this.state;
 
     const messagesT = allMessages.map(msg => {
       if (msg.sender === uid) {
@@ -236,8 +208,6 @@ class Messages extends Component {
         </Typography>
         {!loading ? (
           <div className={classes.message}>
-            {/* <button onClick={this.getMessages}>get messages</button> */}
-
             <ul>{messagesT}</ul>
 
             <form onSubmit={this.handleMessage}>
@@ -247,7 +217,7 @@ class Messages extends Component {
                 type="text"
                 value={this.state.inputMessage}
               />
-              <input type="button" value="send" />
+              <input value="send" type="submit" />
             </form>
           </div>
         ) : (

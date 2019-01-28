@@ -54,22 +54,6 @@ class Home extends Component {
         loading: false
       });
     });
-
-    // const getUser = async () => {
-    //   const res = await fetch('http://127.0.0.1:5000/api/all');
-    //   const { users } = await res.json();
-
-    //   console.log(users);
-
-    //   // this.setState({
-    //   //   users: data.users,
-    //   //   loading: false
-    //   // });
-    // };
-
-    // console.log('hello');
-
-    // getUser();
   }
 
   deleteUser = () => {
@@ -79,8 +63,6 @@ class Home extends Component {
   };
 
   handleUserClick = user => {
-    console.log(user);
-    // console.log('hello');
     this.props.history.push(`/profile/${user.userId}`);
   };
 
@@ -110,9 +92,6 @@ class Home extends Component {
           <Button size="small" color="primary">
             Message
           </Button>
-          {/* <Button size="small" color="primary">
-            Visit profile
-          </Button> */}
         </CardActions>
       </Card>
     ));

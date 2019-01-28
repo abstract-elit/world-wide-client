@@ -45,6 +45,7 @@ class UserProfile extends Component {
   }
 
   handleClick = event => {
+    // Get the chat id
     const curId = this.props.match.params.userId;
     let user = firebase.auth().currentUser;
 
@@ -52,12 +53,41 @@ class UserProfile extends Component {
 
     if (curId < user.uid) {
       chat = `${curId}_${user.uid}`;
+    } else if (curId == user.uid) {
+      console.log('you cant talk to yourself');
+      return;
     } else {
       chat = `${user.uid}_${curId}`;
     }
 
     // sending the user to the chat
     this.props.history.push(`/messages/chat/${chat}`);
+
+    console.log(chat);
+
+    // this creates a new chatroom for the users
+
+    // FIXME: if the convo doesnt exists it creates one with an empty conversation, the problem with this is that it creates an empty message all the time the users click message
+    // let postMessage = {
+    //   msg: '',
+    //   time: '',
+    //   sender: '',
+    //   reciver: ''
+    // };
+
+    // let newPostKey = firebase
+    //   .database()
+    //   .ref('messages')
+    //   .child(chat)
+    //   .push().key;
+
+    // var updates = {};
+    // updates[`/messages/${chat}/${newPostKey}`] = postMessage;
+
+    // firebase
+    //   .database()
+    //   .ref()
+    //   .update(updates);
   };
 
   render() {
