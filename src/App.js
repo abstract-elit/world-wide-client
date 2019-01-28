@@ -53,6 +53,7 @@ class App extends Component {
         localStorage.removeItem('name');
         localStorage.removeItem('email');
         localStorage.removeItem('photo');
+        localStorage.removeItem('uid');
         console.log('logout user');
       })
       .catch(function(error) {

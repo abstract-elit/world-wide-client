@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
+import { EEXIST } from 'constants';
 
 const styles = theme => ({
   root: {
@@ -48,13 +49,77 @@ class Messages extends Component {
     sent: [],
     gotten: [],
     loading: true,
-    uid: ''
+    uid: '',
+    inputMessage: ''
   };
 
   componentDidMount() {
     this.getUser(this.props.match.params.chatId);
-    this.getMessages();
+
+    const dbRef = firebase.database().ref();
+
+    const messagesRef = dbRef.child(
+      'messages/' + this.props.match.params.chatId
+    );
+
+    let messages = [];
+    messagesRef.on('child_added', snap => {
+      let message = snap.val();
+      messages.push(message);
+      this.setState({
+        allMessages: messages,
+        loading: false
+      });
+    });
   }
+
+  handleMessage = event => {
+    event.preventDefault();
+
+    const chatId = this.props.match.params.chatId;
+
+    const reciverId = chatId.split('_').filter(id => id !== this.state.uid);
+
+    console.log(reciverId[0]);
+
+    const writeNewPost = (uid, username, picture, title, body) => {
+      // A post entry.
+
+      const chatId = this.props.match.params.chatId;
+      const reciverId = chatId.split('_').filter(id => id !== this.state.uid);
+
+      var postMessage = {
+        msg: this.state.inputMessage,
+        time: Math.round(+new Date() / 1000),
+        sender: this.state.uid,
+        reciver: reciverId[0]
+      };
+
+      console.log(postMessage, chatId);
+
+      // Get a key for a new Post.
+      var newPostKey = firebase
+        .database()
+        .ref('messages')
+        .child(chatId)
+        .push().key;
+
+      console.log(newPostKey);
+
+      // // Write the new post's data simultaneously in the posts list and the user's post list.
+      var updates = {};
+      updates[`/messages/${chatId}/${newPostKey}`] = postMessage;
+
+      return firebase
+        .database()
+        .ref()
+        .update(updates);
+    };
+
+    // console.log(event.target.value);
+
+    writeNewPost();
+  };
 
   getUser = async chat => {
     const res = await fetch(`http://127.0.0.1:5000/api/all/chats/${chat}`);
@@ -119,6 +184,10 @@ class Messages extends Component {
     });
   };
 
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
   timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
     var months = [
@@ -150,6 +219,8 @@ class Messages extends Component {
     const { classes, match } = this.props;
     const { messages, uid, loading, sent, gotten, allMessages } = this.state;
 
+    // console.log(uid);
+
     const messagesT = allMessages.map(msg => {
       if (msg.sender === uid) {
         return <li className={classes.sent}>{msg.msg}</li>;
@@ -165,9 +236,19 @@ class Messages extends Component {
         </Typography>
         {!loading ? (
           <div className={classes.message}>
-            <button onClick={this.getMessages}>get messages</button>
+            {/* <button onClick={this.getMessages}>get messages</button> */}
 
             <ul>{messagesT}</ul>
+
+            <form onSubmit={this.handleMessage}>
+              <input
+                name="inputMessage"
+                onChange={this.handleChange}
+                type="text"
+                value={this.state.inputMessage}
+              />
+              <input type="button" value="send" />
+            </form>
           </div>
         ) : (
           <p>loading</p>

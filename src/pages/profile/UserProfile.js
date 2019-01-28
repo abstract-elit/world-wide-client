@@ -33,19 +33,15 @@ class UserProfile extends Component {
   };
 
   componentDidMount() {
-    const getUser = async id => {
-      const res = await fetch(`http://127.0.0.1:5000/api/all/${id}`);
-      const { user } = await res.json();
+    const { userId } = this.props.match.params;
+    let userRef = firebase.database().ref('users/' + userId);
 
-      console.log(user);
-
+    userRef.on('value', snapshot => {
       this.setState({
-        user: user,
+        user: snapshot.val(),
         loading: false
       });
-    };
-
-    getUser(this.props.match.params.userId);
+    });
   }
 
   handleClick = event => {
@@ -62,29 +58,32 @@ class UserProfile extends Component {
 
     // sending the user to the chat
     this.props.history.push(`/messages/chat/${chat}`);
-
-    // console.log(chat);
-    // console.log(curId, user.uid);
   };
 
   render() {
     const { classes, match } = this.props;
-
-    console.log();
-
     const { name, username, photoURL } = this.state.user;
-    console.log(this.state);
 
     return (
       <Paper className={classes.root} elevation={1}>
-        <Avatar alt="" src={photoURL} className={classes.avatar} />
-        <Typography variant="h5" component="h3">
-          {name}
-        </Typography>
+        {this.state.loading ? (
+          <p>loading</p>
+        ) : (
+          <div>
+            <Avatar alt="" src={photoURL} className={classes.avatar} />
+            <Typography variant="h5" component="h3">
+              {name}
+            </Typography>
 
-        <Button onClick={this.handleClick} variant="outlined" color="primary">
-          Message!
-        </Button>
+            <Button
+              onClick={this.handleClick}
+              variant="outlined"
+              color="primary"
+            >
+              Message!
+            </Button>
+          </div>
+        )}
       </Paper>
     );
   }
