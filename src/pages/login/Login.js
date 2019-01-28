@@ -22,9 +22,6 @@ class Login extends Component {
   state = {
     email: '',
     password: ''
-    // name: '',
-    // photoURL: '',
-    // user: []
   };
 
   handleChange = event => {
@@ -39,13 +36,14 @@ class Login extends Component {
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(user => {
-        console.log(user.user.providerData[0]);
+        // console.log(user.user);
 
         const { displayName, email, photoURL } = user.user.providerData[0];
 
         localStorage.setItem('name', displayName);
         localStorage.setItem('email', email);
         localStorage.setItem('photo', photoURL);
+        localStorage.setItem('uid', user.user.uid);
 
         console.log('logged in!');
       })

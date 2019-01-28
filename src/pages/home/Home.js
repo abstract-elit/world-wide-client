@@ -37,6 +37,7 @@ class Home extends Component {
   componentDidMount() {
     console.log('home!');
     const dbRef = firebase.database().ref();
+
     const usersRef = dbRef.child('users');
 
     console.log(usersRef);
@@ -44,6 +45,8 @@ class Home extends Component {
     let users = [];
     usersRef.on('child_added', snap => {
       let user = snap.val();
+      console.log(user);
+
       users.push(user);
 
       this.setState({
@@ -51,22 +54,6 @@ class Home extends Component {
         loading: false
       });
     });
-
-    // const getUser = async () => {
-    //   const res = await fetch('http://127.0.0.1:5000/api/all');
-    //   const { users } = await res.json();
-
-    //   console.log(users);
-
-    //   // this.setState({
-    //   //   users: data.users,
-    //   //   loading: false
-    //   // });
-    // };
-
-    // console.log('hello');
-
-    // getUser();
   }
 
   deleteUser = () => {
@@ -76,8 +63,6 @@ class Home extends Component {
   };
 
   handleUserClick = user => {
-    console.log(user);
-    // console.log('hello');
     this.props.history.push(`/profile/${user.userId}`);
   };
 
@@ -107,9 +92,6 @@ class Home extends Component {
           <Button size="small" color="primary">
             Message
           </Button>
-          {/* <Button size="small" color="primary">
-            Visit profile
-          </Button> */}
         </CardActions>
       </Card>
     ));

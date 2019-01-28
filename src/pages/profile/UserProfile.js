@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
+import Avatar from '@material-ui/core/Avatar';
 
 const styles = theme => ({
   root: {
@@ -18,13 +19,10 @@ const styles = theme => ({
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2
   },
-  card: {
-    maxWidth: '200px',
-    margin: '10px'
-  },
-  allUsers: {
-    display: 'flex',
-    flexWrap: 'wrap'
+  avatar: {
+    margin: 10,
+    width: 150,
+    height: 150
   }
 });
 
@@ -35,32 +33,87 @@ class UserProfile extends Component {
   };
 
   componentDidMount() {
-    const getUser = async id => {
-      const res = await fetch(`http://127.0.0.1:5000/api/all/${id}`);
-      const { user } = await res.json();
+    const { userId } = this.props.match.params;
+    let userRef = firebase.database().ref('users/' + userId);
 
-      console.log(user);
-
+    userRef.on('value', snapshot => {
       this.setState({
-        user: user,
+        user: snapshot.val(),
         loading: false
       });
-    };
-
-    getUser(this.props.match.params.userId);
+    });
   }
+
+  handleClick = event => {
+    // Get the chat id
+    const curId = this.props.match.params.userId;
+    let user = firebase.auth().currentUser;
+
+    let chat = '';
+
+    if (curId < user.uid) {
+      chat = `${curId}_${user.uid}`;
+    } else if (curId == user.uid) {
+      console.log('you cant talk to yourself');
+      return;
+    } else {
+      chat = `${user.uid}_${curId}`;
+    }
+
+    // sending the user to the chat
+    this.props.history.push(`/messages/chat/${chat}`);
+
+    console.log(chat);
+
+    // this creates a new chatroom for the users
+
+    // FIXME: if the convo doesnt exists it creates one with an empty conversation, the problem with this is that it creates an empty message all the time the users click message
+    // let postMessage = {
+    //   msg: '',
+    //   time: '',
+    //   sender: '',
+    //   reciver: ''
+    // };
+
+    // let newPostKey = firebase
+    //   .database()
+    //   .ref('messages')
+    //   .child(chat)
+    //   .push().key;
+
+    // var updates = {};
+    // updates[`/messages/${chat}/${newPostKey}`] = postMessage;
+
+    // firebase
+    //   .database()
+    //   .ref()
+    //   .update(updates);
+  };
 
   render() {
     const { classes, match } = this.props;
-
-    console.log();
+    const { name, username, photoURL } = this.state.user;
 
     return (
       <Paper className={classes.root} elevation={1}>
-        <Typography variant="h5" component="h3">
-          {this.state.user.name}
-          <p>{this.state.user.username}</p>
-        </Typography>
+        {this.state.loading ? (
+          <p>loading</p>
+        ) : (
+          <div>
+            <Avatar alt="" src={photoURL} className={classes.avatar} />
+            <Typography variant="h5" component="h3">
+              {name}
+            </Typography>
+
+            <Button
+              onClick={this.handleClick}
+              variant="outlined"
+              color="primary"
+            >
+              Message!
+            </Button>
+          </div>
+        )}
       </Paper>
     );
   }

@@ -20,6 +20,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import './App.css';
 import UserProfile from './pages/profile/UserProfile';
+import Messages from './pages/messages/Messages';
 
 const styles = {
   root: {
@@ -52,6 +53,7 @@ class App extends Component {
         localStorage.removeItem('name');
         localStorage.removeItem('email');
         localStorage.removeItem('photo');
+        localStorage.removeItem('uid');
         console.log('logout user');
       })
       .catch(function(error) {
@@ -74,7 +76,6 @@ class App extends Component {
 
   getUser = () => {
     let user = firebase.auth().currentUser;
-    // console.log(user.displayName);
     if (user) {
       console.log(user.uid);
       this.props.history.push('my-profile');
@@ -115,32 +116,19 @@ class App extends Component {
                   Logout
                 </Button>
               )}
-
-              {/* <Button color="inherit">
-                  <Link className={classes.link} to="/signup">
-                    Sign Up
-                  </Link>
-                </Button> */}
-
               <Button onClick={this.getUser} color="inherit">
                 Get User
               </Button>
-
-              {/* <Button color="inherit">
-                <Link to="/profile/:id"></Link>
-              </Button> */}
             </Toolbar>
           </AppBar>
         </div>
-        {/* <header className="App-header">
-          <Typography>welcome to world wide!</Typography>
-        </header> */}
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/signup" component={SignUp} />
-          <Route path="/login" component={Login} />
-          <Route path="/my-profile" component={Profile} />
-          <Route path="/profile/:userId" component={UserProfile} />
+          <Route exact path="/signup" component={SignUp} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/my-profile" component={Profile} />
+          <Route exact path="/profile/:userId" component={UserProfile} />
+          <Route exact path="/messages/chat/:chatId" component={Messages} />
         </Switch>
         {/* <NewPost /> */}
       </div>
