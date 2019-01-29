@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
 
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
@@ -72,7 +67,7 @@ class UserProfile extends Component {
     if (user) {
       if (curId < user.uid) {
         chat = `${curId}_${user.uid}`;
-      } else if (curId == user.uid) {
+      } else if (curId === user.uid) {
         console.log('you cant talk to yourself');
         return;
       } else {
@@ -113,18 +108,10 @@ class UserProfile extends Component {
   };
 
   render() {
-    const { classes, match } = this.props;
+    const { classes } = this.props;
     // const { name, username, photoURL } = this.state.user;
 
-    const {
-      name,
-      age,
-      country,
-      learn,
-      speak,
-      bio,
-      photoURL
-    } = this.state.fakeUser;
+    const { name, country, learn, speak, photoURL } = this.state.fakeUser;
 
     return (
       <Paper className={classes.root} elevation={1}>
