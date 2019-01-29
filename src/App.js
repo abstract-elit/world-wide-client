@@ -4,7 +4,6 @@ import { Route, Switch, Link, withRouter } from 'react-router-dom';
 import firebase from 'firebase';
 
 import SignUp from './pages/signup/SingUp';
-import NewPost from './pages/posts/NewPost';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 import Profile from './pages/profile/Profile';
@@ -15,12 +14,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Card from '@material-ui/core/Card';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import './App.css';
 import UserProfile from './pages/profile/UserProfile';
 import Messages from './pages/messages/Messages';
+
+import { firebaseConfig } from './config';
+firebase.initializeApp(firebaseConfig);
 
 const styles = {
   root: {
@@ -63,8 +64,6 @@ class App extends Component {
   };
 
   componentDidMount() {
-    console.log(localStorage.getItem('name'));
-
     const user = {
       name: localStorage.getItem('name'),
       photo: localStorage.getItem('photo'),

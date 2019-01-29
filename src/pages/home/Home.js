@@ -35,18 +35,11 @@ class Home extends Component {
   };
 
   componentDidMount() {
-    console.log('home!');
     const dbRef = firebase.database().ref();
-
     const usersRef = dbRef.child('users');
-
-    console.log(usersRef);
-
     let users = [];
     usersRef.on('child_added', snap => {
       let user = snap.val();
-      console.log(user);
-
       users.push(user);
 
       this.setState({

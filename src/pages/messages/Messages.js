@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
 
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
-import { EEXIST } from 'constants';
 
 const styles = theme => ({
   root: {
@@ -104,8 +97,6 @@ class Messages extends Component {
     });
   }
 
-  
-
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
@@ -190,7 +181,7 @@ class Messages extends Component {
   }
 
   render() {
-    const { classes, match } = this.props;
+    const { classes } = this.props;
     const { uid, loading, allMessages } = this.state;
 
     const messagesT = allMessages.map(msg => {

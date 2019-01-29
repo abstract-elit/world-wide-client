@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
 
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
+
+import Flag from 'react-world-flags';
 
 const styles = theme => ({
   root: {
@@ -26,9 +23,25 @@ const styles = theme => ({
   }
 });
 
+const User = {
+  email: 'emerson@gmail.com',
+  username: 'emerson',
+  photoURL: 'https://avatars0.githubusercontent.com/u/24904209?s=460&v=4',
+  userId: 'ihEyfd0WnKXdonUWPNEul322KNO2',
+
+  name: 'emersson',
+  country: 'BR',
+  learn: 'US',
+  speak: 'BR',
+  age: '22',
+  bio:
+    'I like everything, music, tv shows, books, tech, culture, and much more. I can talk about anything it depends on the other person.'
+};
+
 class UserProfile extends Component {
   state = {
     user: {},
+    fakeUser: User,
     loading: true
   };
 
@@ -51,19 +64,23 @@ class UserProfile extends Component {
 
     let chat = '';
 
-    if (curId < user.uid) {
-      chat = `${curId}_${user.uid}`;
-    } else if (curId == user.uid) {
-      console.log('you cant talk to yourself');
-      return;
+    if (user) {
+      if (curId < user.uid) {
+        chat = `${curId}_${user.uid}`;
+      } else if (curId === user.uid) {
+        console.log('you cant talk to yourself');
+        return;
+      } else {
+        chat = `${user.uid}_${curId}`;
+      }
     } else {
-      chat = `${user.uid}_${curId}`;
+      // alert('please log in');
+      this.props.history.push(`/login`);
+      return;
     }
 
     // sending the user to the chat
     this.props.history.push(`/messages/chat/${chat}`);
-
-    console.log(chat);
 
     // this creates a new chatroom for the users
 
@@ -91,8 +108,10 @@ class UserProfile extends Component {
   };
 
   render() {
-    const { classes, match } = this.props;
-    const { name, username, photoURL } = this.state.user;
+    const { classes } = this.props;
+    // const { name, username, photoURL } = this.state.user;
+
+    const { name, country, learn, speak, photoURL } = this.state.fakeUser;
 
     return (
       <Paper className={classes.root} elevation={1}>
@@ -102,6 +121,11 @@ class UserProfile extends Component {
           <div>
             <Avatar alt="" src={photoURL} className={classes.avatar} />
             <Typography variant="h5" component="h3">
+              <Flag code={country} height="30" />
+              <br />
+              <Flag code={learn} height="30" />
+              <br />
+              <Flag code={speak} height="30" />
               {name}
             </Typography>
 
