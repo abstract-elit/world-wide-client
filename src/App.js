@@ -22,6 +22,9 @@ import './App.css';
 import UserProfile from './pages/profile/UserProfile';
 import Messages from './pages/messages/Messages';
 
+import { firebaseConfig } from './config';
+firebase.initializeApp(firebaseConfig);
+
 const styles = {
   root: {
     flexGrow: 1
@@ -63,8 +66,6 @@ class App extends Component {
   };
 
   componentDidMount() {
-    console.log(localStorage.getItem('name'));
-
     const user = {
       name: localStorage.getItem('name'),
       photo: localStorage.getItem('photo'),

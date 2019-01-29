@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
+import { withRouter, Link } from 'react-router-dom';
 import firebaseConfig from '../../config';
 
 import Typography from '@material-ui/core/Typography';
@@ -97,9 +98,22 @@ class Login extends Component {
             Submit
           </Button>
         </form>
+
+        <Link className={classes.link} to="/signup">
+          <Button
+            color="inherit"
+            size="large"
+            variant="outlined"
+            type="button"
+            className={classes.margin}
+          >
+            Sign Up
+          </Button>
+        </Link>
       </section>
     );
   }
 }
 
-export default withStyles(styles)(Login);
+const withRoutes = withRouter(Login);
+export default withStyles(styles)(withRoutes);

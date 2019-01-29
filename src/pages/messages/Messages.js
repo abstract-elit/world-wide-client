@@ -68,6 +68,7 @@ class Messages extends Component {
         });
       });
     };
+    
 
     const createChat = () => {
       let postMessage = {
@@ -103,8 +104,6 @@ class Messages extends Component {
       }
     });
   }
-
-  
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });

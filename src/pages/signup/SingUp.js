@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
-import firebaseConfig from '../../config';
 import './SignUp.css';
 
 import Typography from '@material-ui/core/Typography';
@@ -18,8 +17,6 @@ const styles = {
     maxWidth: '500px'
   }
 };
-
-firebase.initializeApp(firebaseConfig);
 
 class SignUp extends Component {
   state = {
