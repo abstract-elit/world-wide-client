@@ -37,7 +37,9 @@ const styles = {
   link: {
     color: '#fff',
     textDecoration: 'none'
-  }
+  },
+  mainCountry: {},
+  wrapper: {}
 };
 
 class App extends Component {

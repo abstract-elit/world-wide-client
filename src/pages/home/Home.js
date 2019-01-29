@@ -9,14 +9,18 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { BulletList } from 'react-content-loader';
 
 const styles = theme => ({
   root: {
+    minHeight: '100vh',
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2
+    paddingBottom: theme.spacing.unit * 2,
+    maxWidth: '900px',
+    margin: 'auto'
   },
   card: {
     maxWidth: '200px',
@@ -25,6 +29,18 @@ const styles = theme => ({
   allUsers: {
     display: 'flex',
     flexWrap: 'wrap'
+  },
+  linearColorPrimary: {
+    backgroundColor: '#333'
+  },
+  linearBarColorPrimary: {
+    backgroundColor: '#00ffba'
+  },
+  progress: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: '100%'
   }
 });
 
@@ -90,15 +106,27 @@ class Home extends Component {
     ));
 
     return (
-      <Paper className={classes.root} elevation={1}>
+      <div className={classes.root} elevation={1}>
         <Typography variant="h5" component="h3">
           All Users:
         </Typography>
 
-        <div className={classes.allUsers}>
-          {this.state.loading ? <p>loading</p> : renderU}
-        </div>
-      </Paper>
+        {this.state.loading ? (
+          <div className={classes.loading}>
+            <LinearProgress
+              className={classes.progress}
+              classes={{
+                colorPrimary: classes.linearColorPrimary,
+                barColorPrimary: classes.linearBarColorPrimary
+              }}
+            />
+
+            <BulletList />
+          </div>
+        ) : (
+          <div className={classes.allUsers}>{renderU}</div>
+        )}
+      </div>
     );
   }
 }
