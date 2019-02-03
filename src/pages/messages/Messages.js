@@ -102,9 +102,37 @@ class Messages extends Component {
 
   messages = React.createRef();
 
+  // TODO: get older messages when user scrolls top
+  // fetch the data with the new limit and change the state
+  // add the new messages to the beginning of the allMessages array
+  handleScroll = () => {
+    const list = this.messages.current;
+    console.log(list.scrollTop);
+
+    if (!list.scrollTop) {
+      console.log('yo');
+
+      const m = this.state.allMessages;
+
+      m.unshift(
+        { msg: 'this message was added' },
+        { msg: 'this message was added too' }
+      );
+
+      console.log(m);
+
+      this.setState({
+        allMessages: m
+      });
+    }
+  };
+
   updateScrool = () => {
     const list = this.messages.current;
-    // console.log(list);
+    console.log(list.scrollTop);
+
+    // if(list.scrollTop() === 0)
+
     list.scrollTop = list.scrollHeight;
   };
 
@@ -115,10 +143,10 @@ class Messages extends Component {
       'messages/' + this.props.match.params.chatId
     );
 
-    const getMessages = () => {
+    const getMessages = limit => {
       let messages = [];
       // gets us only the last 10 messages
-      messagesRef.limitToLast(10).on('child_added', snap => {
+      messagesRef.limitToLast(limit).on('child_added', snap => {
         let message = snap.val();
         messages.push(message);
 
@@ -154,14 +182,14 @@ class Messages extends Component {
         .database()
         .ref()
         .update(updates);
-      getMessages();
+      getMessages(10);
     };
 
     messagesRef.once('value', snapshot => {
       if (!snapshot.exists()) {
         createChat();
       } else {
-        getMessages();
+        getMessages(10);
       }
     });
   }
@@ -196,10 +224,15 @@ class Messages extends Component {
       var updates = {};
       updates[`/messages/${chatId}/${newPostKey}`] = postMessage;
 
-      return firebase
-        .database()
-        .ref()
-        .update(updates);
+      // message validation
+      if (this.state.inputMessage) {
+        firebase
+          .database()
+          .ref()
+          .update(updates);
+      } else {
+        console.log('empty message cannot be added');
+      }
     };
 
     writeNewPost();
@@ -211,9 +244,10 @@ class Messages extends Component {
     // Update the messages list
     setTimeout(() => {
       this.updateScrool();
-    }, 500);
+    }, 100);
   };
 
+  // TODO: you can probably remove this
   dynamicSort(property) {
     var sortOrder = 1;
     if (property[0] === '-') {
@@ -267,7 +301,11 @@ class Messages extends Component {
         );
       }
 
-      return <li className={classes.gotten}>{msg.msg}</li>;
+      return (
+        <li style={{ whiteSpace: 'pre-line' }} className={classes.gotten}>
+          {msg.msg}
+        </li>
+      );
     });
 
     return (
@@ -277,7 +315,12 @@ class Messages extends Component {
         </Typography>
         {!loading ? (
           <div className={classes.message1}>
-            <ul ref={this.messages} className={classes.message}>
+            {/* TODO: add the \n lines when rendered, its being save at the db */}
+            <ul
+              onScroll={this.handleScroll}
+              ref={this.messages}
+              className={classes.message}
+            >
               {messagesT}
             </ul>
 
