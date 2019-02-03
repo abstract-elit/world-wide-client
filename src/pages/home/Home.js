@@ -77,6 +77,9 @@ class Home extends Component {
 
   render() {
     const { classes } = this.props;
+
+    console.log(this.state.users);
+
     const renderU = this.state.users.map(user => (
       <Card className={classes.card}>
         <CardActionArea onClick={() => this.handleUserClick(user)}>
@@ -92,9 +95,7 @@ class Home extends Component {
             <Typography gutterBottom variant="h5" component="h2">
               {user.name}
             </Typography>
-            <Typography component="p">
-              I love talking about football!
-            </Typography>
+            <Typography component="p">{user.bio}</Typography>
           </CardContent>
         </CardActionArea>
         <CardActions>

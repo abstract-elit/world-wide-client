@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
 
-import Typography from '@material-ui/core/Typography';
+import { Typography, TextField } from '@material-ui/core';
+import SendIcon from '@material-ui/icons/Send';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
@@ -10,7 +11,16 @@ const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2
+    paddingBottom: theme.spacing.unit * 2,
+    // background: theme.palette.status.danger,
+    // border: '1px solid #000',
+    height: '80vh',
+    maxWidth: '600px',
+    margin: 'auto',
+    boxSize: 'border-box',
+    marginTop: '30px',
+    marginBottom: '30px',
+    padding: '20px'
   },
   card: {
     maxWidth: '200px',
@@ -21,17 +31,64 @@ const styles = theme => ({
     flexWrap: 'wrap'
   },
   message: {
-    // background: 'red'
+    // background: 'red',
+    margin: 0,
+    padding: 0,
+    height: '60vh',
+    overflow: 'auto',
+    possition: 'relative'
   },
   gotten: {
+    // The first message will always be empty, so when won't show it
+    '&:first-child': {
+      display: 'none'
+    },
     textAlign: 'left',
     listStyle: 'none',
-    background: '#faa'
+    // background: theme.palette.primary.light,
+    background: '#3ea',
+    padding: '20px',
+    margin: '5px 0',
+    borderRadius: '10px'
   },
   sent: {
+    '&:first-child': {
+      display: 'none'
+    },
+
     textAlign: 'right',
     listStyle: 'none',
-    background: '#3ea'
+
+    // border: '1px solid #000',
+    background: '#edf5e1',
+    padding: '20px',
+    margin: '5px 0',
+    borderRadius: '10px'
+  },
+  input: {
+    // height: '50px',
+    // width: '480px',
+    // margin: '0 20px 20px',
+    // borderRadius: '20px',
+    // border: '2px solid #97caef',
+    // fontFamily: 'inherit',
+    // fontSize: '100%',
+    // padding: '10px 10px',
+    // height: '100px',
+
+    // '&[contenteditable]': {
+    //   overflow: 'auto',
+    //   maxHeight: '400px'
+    // },
+    // outline: 'none'
+    width: '100%'
+    // position: 'absolute',
+    // margin: 'auto',
+    // bottom: '50px'
+    // textAlign: 'center'
+  },
+  messageInput: {
+    background: '#ddd'
   }
 });
 
@@ -41,6 +98,14 @@ class Messages extends Component {
     loading: true,
     uid: localStorage.getItem('uid'),
     inputMessage: ''
+  };
+
+  messages = React.createRef();
+
+  updateScrool = () => {
+    const list = this.messages.current;
+    // console.log(list);
+    list.scrollTop = list.scrollHeight;
   };
 
   componentDidMount() {
@@ -55,10 +120,13 @@ class Messages extends Component {
       messagesRef.on('child_added', snap => {
         let message = snap.val();
         messages.push(message);
+
         this.setState({
           allMessages: messages,
           loading: false
         });
+
+        this.updateScrool();
       });
     };
 
@@ -138,6 +206,11 @@ class Messages extends Component {
     this.setState({
       inputMessage: ''
     });
+
+    // Update the messages list
+    setTimeout(() => {
+      this.updateScrool();
+    }, 500);
   };
 
   dynamicSort(property) {
@@ -184,9 +257,13 @@ class Messages extends Component {
     const { classes } = this.props;
     const { uid, loading, allMessages } = this.state;
 
-    const messagesT = allMessages.map(msg => {
+    const messagesT = allMessages.map((msg, i) => {
       if (msg.sender === uid) {
-        return <li className={classes.sent}>{msg.msg}</li>;
+        return (
+          <li key={i} className={classes.sent}>
+            {msg.msg}
+          </li>
+        );
       }
 
       return <li className={classes.gotten}>{msg.msg}</li>;
@@ -194,21 +271,52 @@ class Messages extends Component {
 
     return (
       <Paper className={classes.root} elevation={1}>
-        <Typography variant="h5" component="h3">
-          this is the message component
+        <Typography style={{ textAlign: 'center' }} variant="h5" component="h3">
+          Mr Bean
         </Typography>
         {!loading ? (
-          <div className={classes.message}>
-            <ul>{messagesT}</ul>
+          <div className={classes.message1}>
+            <ul ref={this.messages} className={classes.message}>
+              {messagesT}
+            </ul>
 
-            <form onSubmit={this.handleMessage}>
-              <input
+            <form
+              style={{ width: 'auto', margin: 'auto' }}
+              onSubmit={this.handleMessage}
+            >
+              {/* <textarea
+                autoComplete="false"
+                focus
                 name="inputMessage"
                 onChange={this.handleChange}
                 type="text"
+                placeholder="write your message..."
                 value={this.state.inputMessage}
-              />
-              <input value="send" type="submit" />
+                className={classes.input}
+              /> */}
+
+              <div className={classes.messageInput}>
+                <TextField
+                  id="outlined-multiline-flexible"
+                  type="submit"
+                  label="write something ..."
+                  multiline
+                  rowsMax="3"
+                  name="inputMessage"
+                  onChange={this.handleChange}
+                  value={this.state.inputMessage}
+                  className={classes.input}
+                  margin="normal"
+                  // helperText="Send a message"
+                  variant="outlined"
+                />
+
+                <button type="submit">
+                  <SendIcon />
+                </button>
+
+                {/* <input value="send" type="submit" /> */}
+              </div>
             </form>
           </div>
         ) : (
