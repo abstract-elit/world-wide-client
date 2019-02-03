@@ -6,21 +6,21 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-const colors = {
-  first: '#fc4445',
-  second: '#3feee6',
-  third: '#55bcc9',
-  fourth: '#97caef',
-  other: '#cafafe'
-};
+// const colors = {
+//   first: '#fc4445',
+//   second: '#3feee6',
+//   third: '#55bcc9',
+//   fourth: '#97caef',
+//   other: '#cafafe'
+// };
 
-const colors2 = {
-  first: '#05387b',
-  second: '#379683',
-  third: '#5cdb95',
-  fourth: '#8ee4af',
-  other: '#edf5e1'
-};
+// const colors2 = {
+//   first: '#05387b',
+//   second: '#379683',
+//   third: '#5cdb95',
+//   fourth: '#8ee4af',
+//   other: '#edf5e1'
+// };
 
 const theme = createMuiTheme({
   palette: {
@@ -36,8 +36,9 @@ const theme = createMuiTheme({
       // dark: will be calculated from palette.secondary.main,
       contrastText: '#ffcc00'
     },
-    status: {
-      danger: 'orange'
+    masseges: {
+      mainUser: '#',
+      secondUser: '#'
     }
     // error: will use the default color
   },

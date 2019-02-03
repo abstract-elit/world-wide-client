@@ -117,7 +117,8 @@ class Messages extends Component {
 
     const getMessages = () => {
       let messages = [];
-      messagesRef.on('child_added', snap => {
+      // gets us only the last 10 messages
+      messagesRef.limitToLast(10).on('child_added', snap => {
         let message = snap.val();
         messages.push(message);
 
