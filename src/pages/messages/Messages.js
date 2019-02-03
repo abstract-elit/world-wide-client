@@ -4,23 +4,27 @@ import firebase from 'firebase';
 import { Typography, TextField } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+// import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
 
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
-    paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2,
+    // paddingTop: theme.spacing.unit * 2,
+    // paddingBottom: theme.spacing.unit * 2,
     // background: theme.palette.status.danger,
-    // border: '1px solid #000',
-    height: '80vh',
+    border: '1px solid #000',
+    height: '90vh',
     maxWidth: '600px',
     margin: 'auto',
-    boxSize: 'border-box',
-    marginTop: '30px',
-    marginBottom: '30px',
-    padding: '20px'
+    boxSize: 'border-box'
+    // marginTop: '30px',
+    // marginBottom: '30px',
+    // padding: '20px'
+  },
+  message1: {
+    height: '95%',
+    position: 'relative'
   },
   card: {
     maxWidth: '200px',
@@ -34,7 +38,7 @@ const styles = theme => ({
     // background: 'red',
     margin: 0,
     padding: 0,
-    height: '60vh',
+    height: '75vh',
     overflow: 'auto',
     possition: 'relative'
   },
@@ -66,29 +70,18 @@ const styles = theme => ({
     borderRadius: '10px'
   },
   input: {
-    // height: '50px',
-    // width: '480px',
-    // margin: '0 20px 20px',
-    // borderRadius: '20px',
-    // border: '2px solid #97caef',
-    // fontFamily: 'inherit',
-    // fontSize: '100%',
-    // padding: '10px 10px',
-    // height: '100px',
-
-    // '&[contenteditable]': {
-    //   overflow: 'auto',
-    //   maxHeight: '400px'
-    // },
-    // outline: 'none'
-    width: '100%'
-    // position: 'absolute',
-    // margin: 'auto',
-    // bottom: '50px'
-    // textAlign: 'center'
+    width: '100%',
+    margin: 0
   },
   messageInput: {
-    background: '#ddd'
+    display: 'flex',
+    alignItems: 'center',
+
+    position: 'absolute',
+    bottom: 0,
+    width: '100%'
+
+    // background: '#ddd',
   }
 });
 
@@ -112,18 +105,44 @@ class Messages extends Component {
     if (!list.scrollTop) {
       console.log('yo');
 
-      const m = this.state.allMessages;
+      // const dbRef = firebase.database().ref();
 
-      m.unshift(
-        { msg: 'this message was added' },
-        { msg: 'this message was added too' }
-      );
+      // const messagesRef = dbRef.child(
+      //   'messages/' + this.props.match.params.chatId
+      // );
 
-      console.log(m);
+      let messages = this.state.allMessages;
+      let lastId = messages[0];
 
-      this.setState({
-        allMessages: m
-      });
+      console.log(lastId);
+
+      // gets us only the last 10 messages
+      // messagesRef.limitToLast(limit).on('child_added', snap => {
+      // messagesRef.startAt(0, )limitToFirst(5).on('child_added', snap => {
+
+      // let message = snap.val();
+      // messages.push(message);
+
+      // this.setState({
+      //   allMessages: messages,
+      //   loading: false
+      // });
+
+      // this.updateScrool();
+      // });
+
+      // const m = this.state.allMessages;
+
+      // m.unshift(
+      //   { msg: 'this message was added' },
+      //   { msg: 'this message was added too' }
+      // );
+
+      // console.log(m);
+
+      // this.setState({
+      //   allMessages: m
+      // });
     }
   };
 
@@ -146,8 +165,11 @@ class Messages extends Component {
     const getMessages = limit => {
       let messages = [];
       // gets us only the last 10 messages
-      messagesRef.limitToLast(limit).on('child_added', snap => {
+      // messagesRef.limitToLast(limit).on('child_added', snap => {
+      messagesRef.limitToLast(20).on('child_added', snap => {
         let message = snap.val();
+        console.log(snap.key);
+
         messages.push(message);
 
         this.setState({
@@ -309,13 +331,12 @@ class Messages extends Component {
     });
 
     return (
-      <Paper className={classes.root} elevation={1}>
+      <div className={classes.root} elevation={1}>
         <Typography style={{ textAlign: 'center' }} variant="h5" component="h3">
           Mr Bean
         </Typography>
         {!loading ? (
           <div className={classes.message1}>
-            {/* TODO: add the \n lines when rendered, its being save at the db */}
             <ul
               onScroll={this.handleScroll}
               ref={this.messages}
@@ -324,22 +345,9 @@ class Messages extends Component {
               {messagesT}
             </ul>
 
-            <form
-              style={{ width: 'auto', margin: 'auto' }}
-              onSubmit={this.handleMessage}
-            >
-              {/* <textarea
-                autoComplete="false"
-                focus
-                name="inputMessage"
-                onChange={this.handleChange}
-                type="text"
-                placeholder="write your message..."
-                value={this.state.inputMessage}
-                className={classes.input}
-              /> */}
-
+            <form onSubmit={this.handleMessage}>
               <div className={classes.messageInput}>
+                {/* TODO: submit when user hits enter */}
                 <TextField
                   id="outlined-multiline-flexible"
                   type="submit"
@@ -355,18 +363,16 @@ class Messages extends Component {
                   variant="outlined"
                 />
 
-                <button type="submit">
-                  <SendIcon />
-                </button>
-
-                {/* <input value="send" type="submit" /> */}
+                {/* <button type="submit"> */}
+                <SendIcon onClick={this.handleMessage} />
+                {/* </button> */}
               </div>
             </form>
           </div>
         ) : (
           <p>loading</p>
         )}
-      </Paper>
+      </div>
     );
   }
 }
