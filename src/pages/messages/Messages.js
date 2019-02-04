@@ -154,11 +154,16 @@ class Messages extends Component {
   };
 
   updateScrool = () => {
-    const list = this.messages.current;
+    try {
+      const list = this.messages.current;
 
-    console.log(list);
+      console.log('top:', list.scrollTop);
+      console.log('height:', list.scrollHeight);
 
-    // if (list.scrollTop() === 0) list.scrollTop = list.scrollHeight;
+      if (list.scrollTop >= 0) list.scrollTop = list.scrollHeight;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   componentDidMount() {
@@ -172,7 +177,8 @@ class Messages extends Component {
       let messages = [];
       // gets us only the last 10 messages
       // messagesRef.limitToLast(limit).on('child_added', snap => {
-      messagesRef.limitToLast(20).on('child_added', snap => {
+      messagesRef.limitToLast(10).on('child_added', snap => {
+        // messagesRef.on('child_added', snap => {
         let message = snap.val();
         console.log(snap.key);
 
@@ -183,7 +189,7 @@ class Messages extends Component {
           loading: false
         });
 
-        // this.updateScrool();
+        this.updateScrool();
       });
     };
 
@@ -271,7 +277,7 @@ class Messages extends Component {
 
     // Update the messages list
     setTimeout(() => {
-      // this.updateScrool();
+      this.updateScrool();
     }, 100);
   };
 
@@ -311,8 +317,12 @@ class Messages extends Component {
     var hour = a.getHours();
     var min = a.getMinutes();
     var sec = a.getSeconds();
-    var time =
-      date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+
+    // var time =
+    //   date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+
+    const time = `${date} ${month} - ${hour}:${min}`;
+
     return time;
   }
 
@@ -329,6 +339,7 @@ class Messages extends Component {
             style={{ whiteSpace: 'pre-line' }}
           >
             {msg.msg}
+            <p style={{ fontSize: '8px' }}>{this.timeConverter(msg.time)}</p>
           </li>
         );
       }
@@ -340,6 +351,7 @@ class Messages extends Component {
           className={classes.gotten}
         >
           {msg.msg}
+          <p style={{ fontSize: '8px' }}>{this.timeConverter(msg.time)}</p>
         </li>
       );
     });
