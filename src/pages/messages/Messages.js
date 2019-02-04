@@ -7,7 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 // import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
 
-import SimpleBar from 'simplebar-react';
+// import SimpleBar from 'simplebar-react';
 
 import 'simplebar/dist/simplebar.min.css';
 
@@ -44,7 +44,9 @@ const styles = theme => ({
     padding: 0,
     height: '75vh',
     // overflow: 'auto',
-    // overflowY: 'auto',
+    overflowY: 'scroll',
+    WebkitOverflowScrolling: 'touch',
+
     possition: 'relative'
   },
   gotten: {
@@ -349,25 +351,24 @@ class Messages extends Component {
         </Typography>
         {!loading ? (
           <div className={classes.message1}>
-            <div ref={this.messages}>
-              <SimpleBar
-                // onScroll={this.handleScroll}
+            {/* <SimpleBar
+              // onScroll={this.handleScroll}
+              style={{ width: '600px' }}
+              className={classes.message}
+              onClick={this.updateScrool}
+              ref={this.messages}
+            >
+              <button>load more</button>
+              {messagesT}
+            </SimpleBar> */}
 
-                style={{ width: '600px' }}
-                className={classes.message}
-                onClick={this.updateScrool}
-              >
-                {messagesT}
-              </SimpleBar>
-            </div>
-
-            {/* <ul
+            <ul
               onScroll={this.handleScroll}
               ref={this.messages}
               className={classes.message}
             >
               {messagesT}
-            </ul> */}
+            </ul>
 
             <form onSubmit={this.handleMessage}>
               <div className={classes.messageInput}>
