@@ -7,6 +7,10 @@ import { withStyles } from '@material-ui/core/styles';
 // import Paper from '@material-ui/core/Paper';
 import { withRouter } from 'react-router-dom';
 
+import SimpleBar from 'simplebar-react';
+
+import 'simplebar/dist/simplebar.min.css';
+
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
@@ -39,7 +43,8 @@ const styles = theme => ({
     margin: 0,
     padding: 0,
     height: '75vh',
-    overflow: 'auto',
+    // overflow: 'auto',
+    // overflowY: 'auto',
     possition: 'relative'
   },
   gotten: {
@@ -148,11 +153,10 @@ class Messages extends Component {
 
   updateScrool = () => {
     const list = this.messages.current;
-    console.log(list.scrollTop);
 
-    // if(list.scrollTop() === 0)
+    console.log(list);
 
-    list.scrollTop = list.scrollHeight;
+    // if (list.scrollTop() === 0) list.scrollTop = list.scrollHeight;
   };
 
   componentDidMount() {
@@ -177,7 +181,7 @@ class Messages extends Component {
           loading: false
         });
 
-        this.updateScrool();
+        // this.updateScrool();
       });
     };
 
@@ -265,7 +269,7 @@ class Messages extends Component {
 
     // Update the messages list
     setTimeout(() => {
-      this.updateScrool();
+      // this.updateScrool();
     }, 100);
   };
 
@@ -317,14 +321,22 @@ class Messages extends Component {
     const messagesT = allMessages.map((msg, i) => {
       if (msg.sender === uid) {
         return (
-          <li key={i} className={classes.sent}>
+          <li
+            key={i}
+            className={classes.sent}
+            style={{ whiteSpace: 'pre-line' }}
+          >
             {msg.msg}
           </li>
         );
       }
 
       return (
-        <li style={{ whiteSpace: 'pre-line' }} className={classes.gotten}>
+        <li
+          key={i}
+          style={{ whiteSpace: 'pre-line' }}
+          className={classes.gotten}
+        >
           {msg.msg}
         </li>
       );
@@ -337,13 +349,25 @@ class Messages extends Component {
         </Typography>
         {!loading ? (
           <div className={classes.message1}>
-            <ul
+            <div ref={this.messages}>
+              <SimpleBar
+                // onScroll={this.handleScroll}
+
+                style={{ width: '600px' }}
+                className={classes.message}
+                onClick={this.updateScrool}
+              >
+                {messagesT}
+              </SimpleBar>
+            </div>
+
+            {/* <ul
               onScroll={this.handleScroll}
               ref={this.messages}
               className={classes.message}
             >
               {messagesT}
-            </ul>
+            </ul> */}
 
             <form onSubmit={this.handleMessage}>
               <div className={classes.messageInput}>
