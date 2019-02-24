@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, HashRouter } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 // const colors = {
@@ -62,7 +62,9 @@ const theme = createMuiTheme({
 ReactDOM.render(
   <Router basename={process.env.PUBLIC_URL}>
     <MuiThemeProvider theme={theme}>
-      <App />
+      <HashRouter>
+        <App />
+      </HashRouter>
     </MuiThemeProvider>
   </Router>,
   document.getElementById('root')
