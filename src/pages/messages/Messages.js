@@ -167,6 +167,9 @@ class Messages extends Component {
   };
 
   componentDidMount() {
+
+    console.log('welcome to muto!');
+
     const dbRef = firebase.database().ref();
 
     const messagesRef = dbRef.child(
